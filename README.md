@@ -1,5 +1,4 @@
 # Chain of Agents Implementation
-[![Star History Chart](https://api.star-history.com/svg?repos=rudrankriyam/Chain-of-Agents&type=Date)](https://star-history.com/#rudrankriyam/Chain-of-Agents&Date)
 
 
 ![Chain of Agents](Screenshot%202025-01-29%20at%2015.05.34.png)
@@ -144,3 +143,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     year={2024}
 }
 ```
+
+[![Star History Chart](https://api.star-history.com/svg?repos=rudrankriyam/Chain-of-Agents&type=Date)](https://star-history.com/#rudrankriyam/Chain-of-Agents&Date)
