@@ -27,6 +27,19 @@ def read_pdf(pdf_path: str) -> str:
         logger.error(f"Error reading PDF: {str(e)}")
         raise
 
+def get_pdf_page_count(pdf_path: str) -> int:
+    """
+    Get the number of pages in a PDF file.
+
+    Args:
+        pdf_path: Path to the PDF file
+
+    Returns:
+        int: Number of pages in the PDF
+    """
+    with fitz.open(pdf_path) as doc:
+        return len(doc)
+
 def split_into_chunks(text: str, chunk_size: int, model: str = "llama-3.3-70b-versatile") -> List[str]:
     """
     Split text into chunks based on word count.
@@ -74,14 +87,14 @@ def split_into_chunks(text: str, chunk_size: int, model: str = "llama-3.3-70b-ve
     logger.info(f"Split text into {len(chunks)} chunks")
     return chunks
 
-def count_tokens(text: str, model: str = "llama-3.3-70b-versatile") -> int:
+def count_words(text: str, model: str = "llama-3.3-70b-versatile") -> int:
     """
-    Count the number of words in a text string.
-    
+    Count the number of whitespace-separated words in a text string.
+
     Args:
         text: The input text
         model: Not used, kept for compatibility
-        
+
     Returns:
         int: Number of words
     """

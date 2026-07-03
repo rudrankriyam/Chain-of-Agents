@@ -69,20 +69,27 @@ class ChainOfAgents:
         
         return final_output 
     
-    def process_stream(self, input_text: str, query: str) -> Iterator[Dict[str, str]]:
-        """Process text with streaming - yields worker and manager messages."""
+    def process_stream(self, input_text: str, query: str, total_pages: int = 0) -> Iterator[Dict[str, str]]:
+        """
+        Process text with streaming - yields worker and manager messages.
+
+        Args:
+            input_text: The long input text to process
+            query: The user's query about the text
+            total_pages: Number of pages in the source document (0 if unknown)
+        """
         worker_outputs = []
         previous_cu = None
-        
+
         chunks = split_into_chunks(input_text, self.chunk_size, self.worker_model)
         total_chunks = len(chunks)
-        
+
         # Debug logging for metadata
         metadata_message = {
             "type": "metadata",
             "content": json.dumps({
                 "total_chunks": total_chunks,
-                "total_pages": getattr(input_text, 'total_pages', 0)
+                "total_pages": total_pages
             })
         }
         logger.info(f"Sending metadata: {metadata_message}")  # Debug log

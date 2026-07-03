@@ -32,8 +32,6 @@ The Chain of Agents framework enables efficient processing of long-context tasks
 
 ## Installation
 
-## Installation
-
 ```bash
 git clone https://github.com/rudrankriyam/chain-of-agents.git
 cd chain-of-agents
@@ -113,7 +111,7 @@ Uses Together AI's hosted models:
 
 ### On-Device Processing
 Uses MLX-optimized models:
-- Default model: `llama-3.1-8B` (Quantized 8-bit version)
+- Default model: `Llama 3.2 3B` (quantized 4-bit version, `ModelRegistry.llama3_2_3B_4bit`)
 - Automatically handles model downloading and caching
 - Optimized for Apple Silicon processors
 
@@ -122,7 +120,7 @@ Uses MLX-optimized models:
 - Built with SwiftUI for the macOS interface
 - Uses MLX framework for efficient on-device inference
 - Implements Server-Sent Events (SSE) for real-time progress updates
-- Supports concurrent processing of document chunks
+- Processes document chunks sequentially, passing context between workers
 - Automatic memory management for large documents
 
 ## Contributing
