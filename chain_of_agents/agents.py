@@ -1,4 +1,4 @@
-from typing import List, Optional, Iterator, Dict
+from typing import List, Optional
 from together import Together
 import os
 
@@ -41,24 +41,6 @@ class WorkerAgent:
         )
         
         return response.choices[0].message.content
-    
-    async def process_chunk_stream(self, chunk: str, query: str, previous_cu: Optional[str] = None) -> Iterator[str]:
-        """Process a chunk with streaming (for future implementation)."""
-        messages = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": f"Chunk: {chunk}\nQuery: {query}\nPrevious CU: {previous_cu or 'None'}"}
-        ]
-        
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=0.3,
-            stream=True
-        )
-        
-        async for chunk in response:
-            if chunk.choices and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
 
 class ManagerAgent:
     """Manager agent that synthesizes outputs from worker agents."""
@@ -100,25 +82,4 @@ class ManagerAgent:
             temperature=0.3
         )
         
-        return response.choices[0].message.content
-    
-    async def synthesize_stream(self, worker_outputs: List[str], query: str) -> Iterator[str]:
-        """Synthesize with streaming (for future implementation)."""
-        combined_outputs = "\n\n".join(f"Worker {i+1}: {output}" 
-                                     for i, output in enumerate(worker_outputs))
-        
-        messages = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": f"Worker Outputs:\n{combined_outputs}\n\nQuery: {query}"}
-        ]
-        
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=0.3,
-            stream=True
-        )
-        
-        async for chunk in response:
-            if chunk.choices and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content 
+        return response.choices[0].message.content 
