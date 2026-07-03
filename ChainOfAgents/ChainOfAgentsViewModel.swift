@@ -42,6 +42,10 @@ final class ChainOfAgentsViewModel: ObservableObject {
         }
     }
 
+    /// URL currently holding security-scoped access, so every successful
+    /// startAccessingSecurityScopedResource() is balanced by a stop call.
+    private var securityScopedURL: URL?
+
     func selectPDF(url: URL) {
         // Start accessing the security-scoped resource
         guard url.startAccessingSecurityScopedResource() else {
@@ -51,13 +55,23 @@ final class ChainOfAgentsViewModel: ObservableObject {
 
         // Try to create PDFDocument to verify it's a valid PDF
         if let pdfDocument = PDFDocument(url: url) {
+            // Release access held for any previously selected file before
+            // keeping access open for the new one (needed later for reading).
+            releaseSecurityScopedAccess()
+            securityScopedURL = url
             selectedPDFURL = url
             pageCount = pdfDocument.pageCount
             error = nil
         } else {
+            // Balance the successful start call on this failure path
             url.stopAccessingSecurityScopedResource()
             error = "Could not open PDF file"
         }
+    }
+
+    private func releaseSecurityScopedAccess() {
+        securityScopedURL?.stopAccessingSecurityScopedResource()
+        securityScopedURL = nil
     }
 
     func processText() {
@@ -191,10 +205,12 @@ final class ChainOfAgentsViewModel: ObservableObject {
                 if let str = String(data: currentData, encoding: .utf8),
                    str.contains("\n")
                 {
+                    // Split on newlines, but keep the trailing fragment (an
+                    // incomplete line) in the buffer for the next iteration.
+                    var lines = str.components(separatedBy: "\n")
+                    let remainder = lines.removeLast()
 
-                    let messages = str.split(separator: "\n")
-
-                    for message in messages where !message.isEmpty {
+                    for message in lines where !message.isEmpty {
                         if let sseMessage = SSEMessage(rawMessage: String(message)) {
                             let streamMessage = sseMessage.data
 
@@ -222,7 +238,7 @@ final class ChainOfAgentsViewModel: ObservableObject {
                         }
                     }
 
-                    currentData.removeAll()
+                    currentData = remainder.data(using: .utf8) ?? Data()
                 }
             }
 
