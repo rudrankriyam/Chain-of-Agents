@@ -141,5 +141,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     year={2024}
 }
 ```
-
-[![Star History Chart](https://api.star-history.com/svg?repos=rudrankriyam/Chain-of-Agents&type=Date)](https://star-history.com/#rudrankriyam/Chain-of-Agents&Date)
